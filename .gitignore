@@ -15,3 +15,6 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
+.php_cs
+.php_cs.cache
+.idea
