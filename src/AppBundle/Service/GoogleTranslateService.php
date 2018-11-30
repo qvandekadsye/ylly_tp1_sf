@@ -2,11 +2,12 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Interfaces\TranslatorInterface;
 use Google\Cloud\Translate\TranslateClient;
 
-class GoogleTranslateService
+class GoogleTranslateService implements TranslatorInterface
 {
-    const LENGTHLIMIT = 2000;
+    const LENGTHLIMIT = 1000;
     /**
      * @var TranslateClient
      */
@@ -14,7 +15,8 @@ class GoogleTranslateService
 
     public function __construct($apikey)
     {
-        $this->translateClient = new TranslateClient(['apikey' => $apikey]);
+        $this->translateClient = new TranslateClient(['key' => $apikey]);
+        var_dump($apikey);
     }
 
     /**
@@ -39,8 +41,15 @@ class GoogleTranslateService
 
             return $this->translateClient->translate($toBeTranslated, ['source' => $sourceLanguage, 'target' => $targetLanguage])['text'];
         } catch (\Exception $exception) {
-            //todo  à voir en fonction de l'exception;
-            return 'toto';
+            $errorArray = json_decode($exception->getMessage());
+            if($errorArray->message === "User Rate Limit Exceeded")
+            {
+                var_dump( $exception->getMessage());
+                sleep(100);
+            }
+
+
+            return $this->translateClient->translate($toBeTranslated, ['source' => $sourceLanguage, 'target' => $targetLanguage])['text'];
         }
     }
 

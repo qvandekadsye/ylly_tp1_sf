@@ -32,3 +32,5 @@ services:
     app.google.translation:
         class: AppBundle\Service\GoogleTranslateService
         arguments: ['%google_translation_api%']
+
+    AppBundle\Service\GoogleTranslateService: '@app.google.translation'
